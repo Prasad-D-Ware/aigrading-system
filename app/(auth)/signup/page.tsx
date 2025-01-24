@@ -1,8 +1,9 @@
+import Signup from "@/components/auth/SignUp";
 
- export default function Login() {
-  return (
-    <div className="font-bold flex justify-center text-2xl">
-       <div>Sign Up Page</div>
-     </div>
-  );
+export default function SignUpPage() {
+	return (
+		<>
+			<Signup />
+		</>
+	);
 }
