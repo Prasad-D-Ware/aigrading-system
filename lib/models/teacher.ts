@@ -8,6 +8,7 @@ const teacherSchema  = new Schema(
         email : {
             type : String,
             required :true,
+            unique : true,
         },
         username : {
             type : String,
