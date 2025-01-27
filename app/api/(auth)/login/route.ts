@@ -35,11 +35,14 @@ export const POST = async (req: Request) => {
 				email :teacher.email,
 				username: username,
 			},
-			JWT_SECRET
+			JWT_SECRET,
+			{
+				expiresIn : '1d',
+			}
 		);
 
 		return NextResponse.json({
-			msg: "User logged in Successfully!",
+			msg: "Teacher logged in Successfully!",
 			token,
 		});
 	} catch (error: any) {

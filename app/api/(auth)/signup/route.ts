@@ -34,7 +34,7 @@ export const POST = async (req: Request) => {
 	} catch (error: any) {
 		console.log("Error while signing up : ", error.message);
 		return NextResponse.json({
-			error: error.message,
+			msg: error.message,
 		},{status : 500});
 	}
 };
