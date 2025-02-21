@@ -22,13 +22,11 @@ const projectSchema = new Schema(
         },
         project_creator : {
             type : String,
-            unique :true
         },
         description :{
             type :String,
-            unique : true
         },
-        no_of_contributers : {
+        no_of_contributors : {
             type : Number
         },
         created_at : {
@@ -49,8 +47,8 @@ const projectSchema = new Schema(
         language : {
             type : String
         },
-        contributers : {
-            type : [String]
+        contributors : {
+            type : [Object]
         },
     }
 );
