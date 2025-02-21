@@ -4,18 +4,24 @@ import Link from "next/link";
 import { GraduationCap } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuthStore } from "@/store/auth-store";
 
 export default function Header() {
 	const router = useRouter();
-	const [username, setUsername] = useState<string | null>(null);
+	const { username, logoutUser } = useAuthStore();
 
-  useEffect(() => {
-    // Access localStorage only in the browser
-    if (typeof window !== "undefined") {
-      setUsername(localStorage.getItem("username"));
-    }
-  }, []);
+	const handleLogout = () => {
+		logoutUser();
+		router.push("/login");
+	};
 
 	return (
 		<motion.header
@@ -61,9 +67,24 @@ export default function Header() {
 							Login
 						</button>
 					) : (
-						<div className="bg-purple-600 h-10 w-10 rounded-full flex items-center justify-center text-white shadow-xl">
-							{username[0].toUpperCase()}
-						</div>
+						<DropdownMenu>
+							<DropdownMenuTrigger>
+								<div className="bg-purple-600 h-10 w-10 rounded-full flex items-center justify-center text-white shadow-xl">
+									{username[0].toUpperCase()}
+								</div>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent>
+								<DropdownMenuLabel>My Account</DropdownMenuLabel>
+								<DropdownMenuSeparator />
+								<DropdownMenuItem>{username}</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => router.push("/projects")}>
+									Projects
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={handleLogout}>
+									Logout
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
 					)}
 				</div>
 			</div>
