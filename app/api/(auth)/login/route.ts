@@ -1,16 +1,22 @@
 import Teacher from "@/lib/models/teacher";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import * as jose from "jose";
 import connectDB from "@/lib/db";
 
-const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 export const POST = async (req: Request) => {
 	const { username, password } = await req.json();
 
+	if (!username || !password) {
+		return NextResponse.json({
+			msg: "Enter the required details!",
+		});
+	}
+
 	try {
 		await connectDB();
+
 		const teacher = await Teacher.findOne({
 			username: username,
 		});
@@ -29,22 +35,21 @@ export const POST = async (req: Request) => {
 			});
 		}
 
-		const token = jwt.sign(
-			{
-				teacher_id: teacher.teacher_id,
-				email :teacher.email,
-				username: username,
-			},
-			JWT_SECRET,
-			{
-				expiresIn : '1d',
-			}
-		);
+		const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+		const token = await new jose.SignJWT({
+			teacher_id: teacher.teacher_id,
+			email: teacher.email,
+			username: username,
+		})
+			.setProtectedHeader({ alg: "HS256" })
+			.setExpirationTime("1d")
+			.sign(secret);
 
 		return NextResponse.json({
 			msg: "Teacher logged in Successfully!",
 			token,
 		});
+
 	} catch (error: any) {
 		console.log("Error logging in : ", error.message);
 		return NextResponse.json({
