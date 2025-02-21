@@ -10,11 +10,16 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { toast } from 'sonner'
+import { useAuthStore } from '@/store/auth-store'
 
 export default function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const router = useRouter()
+  const {
+    setToken ,
+    setTeacherUsername,
+  } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,12 +36,17 @@ export default function Login() {
 
     const { token, msg } = await response.json();
 
-    localStorage.setItem("token" , token);
-    localStorage.setItem("username" , username);
+    if(!token || !msg) {
+      toast("Login Failed")
+    }
+    // localStorage.setItem("token" , token);
+    setToken(token);
+    // localStorage.setItem("username" , username);
+    setTeacherUsername(username);
+    if(token){
+      router.push('/projects')
+    }
     toast(msg);
-
-
-    router.push('/projects')
   }
 
   return (

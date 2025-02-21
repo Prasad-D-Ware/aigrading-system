@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -37,13 +36,10 @@ export default function Signup() {
 			body: JSON.stringify({ email, username, password }),
 		});
 
-
-    const { msg } = await  response.json();
-
-    console.log(msg);
-	toast(msg);
-		// For demo purposes, we'll just redirect to a dashboard
-		router.push('/login')
+		const { msg } = await response.json();
+		// console.log(msg);
+		router.push("/login");
+		toast(msg);
 	};
 
 	return (
@@ -64,7 +60,7 @@ export default function Signup() {
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							<form onSubmit={handleSubmit}>
+							<form onSubmit={handleSubmit} >
 								<div className="grid w-full items-center gap-4">
 									<div className="flex flex-col space-y-1.5">
 										<Label htmlFor="email">Email</Label>
