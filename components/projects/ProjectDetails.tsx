@@ -52,7 +52,7 @@ const ProjectDetails = ({ project_id }: { project_id: string }) => {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization : "Bearer " + token
+					Authorization: "Bearer " + token,
 				},
 				body: JSON.stringify({ project_id }),
 			});
@@ -72,8 +72,10 @@ const ProjectDetails = ({ project_id }: { project_id: string }) => {
 	};
 
 	useEffect(() => {
-		fetchStudents();
-	}, [project_id]); // Added project_id to dependency array
+		if (token) {
+			fetchStudents();
+		}
+	}, [project_id, token]); // Added project_id to dependency array
 
 	return (
 		<div className="mx-auto max-w-5xl p-3 md:p-10">

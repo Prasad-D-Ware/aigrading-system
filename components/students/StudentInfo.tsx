@@ -16,7 +16,7 @@ const StudentInfo = ({ user_id }: { user_id: string }) => {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization : "Bearer " + token
+					Authorization: "Bearer " + token,
 				},
 				body: JSON.stringify({ user_id }),
 			});
@@ -30,8 +30,10 @@ const StudentInfo = ({ user_id }: { user_id: string }) => {
 	};
 
 	useEffect(() => {
-		fetchStudentData();
-	}, []);
+		if (token) {
+			fetchStudentData();
+		}
+	}, [token]);
 
 	return <div>{student && <StudentProfile student={student} />}</div>;
 };
