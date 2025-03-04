@@ -22,11 +22,16 @@ export default function Signup() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const router = useRouter();
+	const [errors, setErrors] = useState<
+		{
+			message?: string;
+			path?: string[];
+		}[]
+	>([]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		// Here you would typically handle the signup logic
-		// console.log("Signup attempt", { email, username, password });
+		setErrors([]); // Reset errors on new submission
 
 		const response = await fetch("/api/signup", {
 			method: "POST",
@@ -36,10 +41,20 @@ export default function Signup() {
 			body: JSON.stringify({ email, username, password }),
 		});
 
-		const { msg } = await response.json();
-		// console.log(msg);
-		router.push("/login");
-		toast(msg);
+		const data = await response.json();
+
+		if (data.errors) {
+			setErrors(data.errors);
+			toast.error(data.msg);
+			return;
+		}
+
+		if (response.ok) {
+			router.push("/login");
+			toast.success(data.msg);
+		} else {
+			toast.error(data.msg);
+		}
 	};
 
 	return (
@@ -60,7 +75,7 @@ export default function Signup() {
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							<form onSubmit={handleSubmit} >
+							<form onSubmit={handleSubmit}>
 								<div className="grid w-full items-center gap-4">
 									<div className="flex flex-col space-y-1.5">
 										<Label htmlFor="email">Email</Label>
@@ -72,6 +87,14 @@ export default function Signup() {
 											onChange={(e) => setEmail(e.target.value)}
 											required
 										/>
+										{errors.map(
+											(error, index) =>
+												error.path?.[0] === "email" && (
+													<p key={index} className="text-sm text-red-500">
+														{error.message}
+													</p>
+												)
+										)}
 									</div>
 									<div className="flex flex-col space-y-1.5">
 										<Label htmlFor="username">Username</Label>
@@ -82,6 +105,14 @@ export default function Signup() {
 											onChange={(e) => setUsername(e.target.value)}
 											required
 										/>
+										{errors.map(
+											(error, index) =>
+												error.path?.[0] === "username" && (
+													<p key={index} className="text-sm text-red-500">
+														{error.message}
+													</p>
+												)
+										)}
 									</div>
 									<div className="flex flex-col space-y-1.5">
 										<Label htmlFor="password">Password</Label>
@@ -93,6 +124,14 @@ export default function Signup() {
 											onChange={(e) => setPassword(e.target.value)}
 											required
 										/>
+										{errors.map(
+											(error, index) =>
+												error.path?.[0] === "password" && (
+													<p key={index} className="text-sm text-red-500">
+														{error.message}
+													</p>
+												)
+										)}
 									</div>
 								</div>
 							</form>

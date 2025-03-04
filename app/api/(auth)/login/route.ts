@@ -3,15 +3,21 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import * as jose from "jose";
 import connectDB from "@/lib/db";
-
+import { validateLogin } from "@/utils/userValidation";
 
 export const POST = async (req: Request) => {
 	const { username, password } = await req.json();
 
-	if (!username || !password) {
-		return NextResponse.json({
-			msg: "Enter the required details!",
-		});
+	const login = validateLogin({ username, password });
+
+	if (!login.success) {
+		return NextResponse.json(
+			{
+				msg: "Login Failed",
+				errors: login.errors,
+			},
+			{ status: 400 }
+		);
 	}
 
 	try {
@@ -49,7 +55,6 @@ export const POST = async (req: Request) => {
 			msg: "Teacher logged in Successfully!",
 			token,
 		});
-
 	} catch (error: any) {
 		console.log("Error logging in : ", error.message);
 		return NextResponse.json({
