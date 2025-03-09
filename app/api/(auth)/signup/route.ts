@@ -27,6 +27,20 @@ export const POST = async (req: Request) => {
 
 		await connectDB();
 
+		const user = await Teacher.findOne({
+			$or: [{ username }, { email }]
+		});
+
+		// console.log(user);
+		if (user) {
+			return NextResponse.json(
+				{
+					msg: "Username or Email already exists",
+				},
+				{ status: 401 }
+			);
+		}
+
 		await Teacher.create({
 			teacher_id: id,
 			email: email,
