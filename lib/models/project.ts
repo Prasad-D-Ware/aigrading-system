@@ -50,6 +50,20 @@ const projectSchema = new Schema(
         contributors : {
             type : [Object]
         },
+        projectStats: {
+            totalCommits: {
+                type : Number
+            },
+            avgCommits: {
+                type : Number
+            },
+            totalProjectAdditions : {
+                type : Number
+            }, 
+            totalProjectDeletions : {
+                type : Number
+            }
+        },
     }
 );
 
