@@ -36,6 +36,11 @@ export async function getRepositoryInfo(repoUrl: string) {
 			per_page: 160, // We just want the total count
 		});
 
+    let totalCommits = 0;
+    contributors?.map((contributor) =>{
+        totalCommits += contributor.contributions
+    })
+
 		// Fetch repository languages
 		const { data: languages } = await octokit.repos.listLanguages({
 			owner,
@@ -55,6 +60,8 @@ export async function getRepositoryInfo(repoUrl: string) {
 			visibility: repository.visibility,
 			language: Object.keys(languages)[0], // Primary language
 			totalContributors: contributors.length,
+      totalCommits : totalCommits,
+      avgCommits : totalCommits / contributors.length,
 			repositoryUrl: repository.html_url,
 			defaultBranch: repository.default_branch,
 		};
