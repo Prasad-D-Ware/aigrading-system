@@ -2,7 +2,11 @@ import connectDB from "@/lib/db";
 import Project from "@/lib/models/project";
 import Student from "@/lib/models/student";
 import Teacher from "@/lib/models/teacher";
-import { fetchRepositoryContributors, getContributorDetailedStats, getRepositoryInfo } from "@/utils/github";
+import {
+	fetchRepositoryContributors,
+	getContributorDetailedStats,
+	getRepositoryInfo,
+} from "@/utils/github";
 import { NextResponse } from "next/server";
 import { v4 as uuid4 } from "uuid";
 
@@ -49,27 +53,38 @@ export const POST = async (req: Request) => {
 		}
 
 		const contributors = await fetchRepositoryContributors(projectUrl);
-		// Process contributors in parallel but wait for all to complete
-		await Promise.all(contributors?.map(async (contributor) => {
-			const detailedStats = await getContributorDetailedStats(projectUrl, contributor.username || "");
-			
-			const studentContributor = {
-				project_id,
-				user_id: contributor.id,
-				github_username: contributor.username,
-				profile_url: contributor.profileUrl, 
-				avatar_url: contributor.avatarUrl,
-				total_commits: detailedStats.totalCommits,
-				total_additions: detailedStats.totalAdditions,
-				total_deletions: detailedStats.totalDeletions,
-				active_days: detailedStats.activeDays,
-				commit_history: detailedStats.commitHistory,
-				languages: detailedStats.languages,
-				weekly_activity: detailedStats.weeklyActivity
-			};
 
-			return Student.create(studentContributor);
-		}) || []);
+		let totalProjectAdditions = 0;
+		let totalProjectDeletions = 0;
+		// Process contributors in parallel but wait for all to complete
+		await Promise.all(
+			contributors?.map(async (contributor) => {
+				const detailedStats = await getContributorDetailedStats(
+					projectUrl,
+					contributor.username || ""
+				);
+
+				totalProjectAdditions += detailedStats.totalAdditions;
+				totalProjectDeletions += detailedStats.totalDeletions;
+
+				const studentContributor = {
+					project_id,
+					user_id: contributor.id,
+					github_username: contributor.username,
+					profile_url: contributor.profileUrl,
+					avatar_url: contributor.avatarUrl,
+					total_commits: detailedStats.totalCommits,
+					total_additions: detailedStats.totalAdditions,
+					total_deletions: detailedStats.totalDeletions,
+					active_days: detailedStats.activeDays,
+					commit_history: detailedStats.commitHistory,
+					languages: detailedStats.languages,
+					weekly_activity: detailedStats.weeklyActivity,
+				};
+
+				return Student.create(studentContributor);
+			}) || []
+		);
 
 		const project = {
 			project_id: project_id,
@@ -85,7 +100,13 @@ export const POST = async (req: Request) => {
 			stars: repoInfo.stars,
 			visibility: repoInfo.visibility,
 			language: repoInfo.language,
-			contributors : contributors
+			contributors: contributors,
+			projectStats: {
+				totalCommits: repoInfo.totalCommits,
+				avgCommits: repoInfo.avgCommits,
+				totalProjectAdditions, 
+				totalProjectDeletions
+			},
 		};
 
 		const ProjectObj = await Project.create(project);
