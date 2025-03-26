@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -16,6 +17,7 @@ import {
 import { GitCommit, GitPullRequest, Calendar, Code } from "lucide-react";
 import { GradeData, GradeDialog } from "./GradeDialog";
 import { useAuthStore } from "@/store/auth-store";
+import { Button } from "../ui/button";
 
 interface Commit {
 	date: string;
@@ -57,6 +59,7 @@ export interface StudentProfileProps {
 }
 
 export default function StudentProfile({ student }: StudentProfileProps) {
+	const router = useRouter();
 	const [selectedCommit, setSelectedCommit] = useState<Commit | null>(null);
 	const [grade, setGrade] = useState<GradeData>(student.grade);
 	const [isLoading, setIsLoading] = useState<boolean>();
@@ -78,7 +81,7 @@ export default function StudentProfile({ student }: StudentProfileProps) {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization : "Bearer " + token
+					Authorization: "Bearer " + token,
 				},
 				body: JSON.stringify({ user_id }),
 			});
@@ -94,12 +97,19 @@ export default function StudentProfile({ student }: StudentProfileProps) {
 		}
 	};
 
+	const handleBack = () => {
+		router.push(`/projects/${student.project_id}`);
+	};
+
 	return (
 		<div className="space-y-6 md:p-5">
 			<Card>
 				<CardHeader>
 					<div className="flex justify-between items-center">
-						<div className="flex items-center space-x-4">
+						<div className="flex items-center space-x-4 ">
+							<Button variant="outline" onClick={handleBack} className="mb-4 rounded-full">
+								←
+							</Button>
 							<Avatar className="w-20 h-20">
 								<AvatarImage
 									src={student?.avatar_url}
@@ -126,10 +136,15 @@ export default function StudentProfile({ student }: StudentProfileProps) {
 						{
 							<>
 								{grade ? (
-									<GradeDialog gradeData={grade} />
+									<div className="flex gap-2 flex-col md:flex-row">
+										<Button className="bg-purple-600 hover:bg-purple-500">
+											Download
+										</Button>
+										<GradeDialog gradeData={grade} />
+									</div>
 								) : (
-									<div
-										className="bg-purple-600 h-9 flex justify-center items-center w-24 text-white rounded-lg hover:cursor-pointer"
+									<Button
+										className="bg-purple-600 hover:bg-purple-500 w-24"
 										onClick={handleStudentGrading}
 									>
 										{isLoading ? (
@@ -150,7 +165,7 @@ export default function StudentProfile({ student }: StudentProfileProps) {
 										) : (
 											"Grade"
 										)}
-									</div>
+									</Button>
 								)}
 							</>
 						}
