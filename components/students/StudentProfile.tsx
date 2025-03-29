@@ -18,6 +18,7 @@ import { GitCommit, GitPullRequest, Calendar, Code } from "lucide-react";
 import { GradeData, GradeDialog } from "./GradeDialog";
 import { useAuthStore } from "@/store/auth-store";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 interface Commit {
 	date: string;
@@ -101,13 +102,73 @@ export default function StudentProfile({ student }: StudentProfileProps) {
 		router.push(`/projects/${student.project_id}`);
 	};
 
+	const handleDownload = async () => {
+		try {
+			setIsLoading(true);
+			const response = await fetch("/api/generate-pdf", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: "Bearer " + token,
+				},
+				body: JSON.stringify({
+					gradeData: grade,
+					studentName: student.github_username,
+					studentData: {
+						github_username: student.github_username,
+						profile_url: student.profile_url,
+						total_commits: student.total_commits,
+						total_additions: student.total_additions,
+						total_deletions: student.total_deletions,
+						active_days: student.active_days,
+						languages: student.languages,
+						commit_history: student.commit_history,
+					},
+				}),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to generate PDF");
+			}
+
+			// Get the blob from the response
+			const blob = await response.blob();
+
+			// Create a URL for the blob
+			const url = window.URL.createObjectURL(blob);
+
+			// Create a temporary link element
+			const link = document.createElement("a");
+			link.href = url;
+			link.download = `gradeai-report-${student.github_username}.pdf`;
+
+			// Append to body, click, and remove
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+
+			// Clean up the URL
+			window.URL.revokeObjectURL(url);
+			setIsLoading(false);
+			toast.success("PDF successfully downloaded!");
+		} catch (error: any) {
+			console.error("Error downloading PDF:", error);
+			toast.error("Failed to generate PDF. Please try again.");
+			setIsLoading(false);
+		}
+	};
+
 	return (
 		<div className="space-y-6 md:p-5">
 			<Card>
 				<CardHeader>
 					<div className="flex justify-between items-center">
 						<div className="flex items-center space-x-4 ">
-							<Button variant="outline" onClick={handleBack} className="mb-4 rounded-full">
+							<Button
+								variant="outline"
+								onClick={handleBack}
+								className="mb-4 rounded-full"
+							>
 								←
 							</Button>
 							<Avatar className="w-20 h-20">
@@ -137,8 +198,28 @@ export default function StudentProfile({ student }: StudentProfileProps) {
 							<>
 								{grade ? (
 									<div className="flex gap-2 flex-col md:flex-row">
-										<Button className="bg-purple-600 hover:bg-purple-500">
-											Download
+										<Button
+											className="bg-purple-600 hover:bg-purple-500"
+											onClick={handleDownload}
+										>
+											{isLoading ? (
+												<div className="flex gap-1">
+													<div
+														className="w-3 h-3 rounded-full bg-white animate-bounce"
+														style={{ animationDelay: "0ms" }}
+													></div>
+													<div
+														className="w-3 h-3 rounded-full bg-white animate-bounce"
+														style={{ animationDelay: "150ms" }}
+													></div>
+													<div
+														className="w-3 h-3 rounded-full bg-white animate-bounce"
+														style={{ animationDelay: "300ms" }}
+													></div>
+												</div>
+											) : (
+												"Download"
+											)}
 										</Button>
 										<GradeDialog gradeData={grade} />
 									</div>
