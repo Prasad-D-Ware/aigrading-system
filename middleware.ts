@@ -35,7 +35,7 @@ export async function middleware(req: NextRequest) {
     // console.log("Decoded token payload:", decoded);
 
     // Now try verification
-    const verified = verifyJWT(token, process.env.JWT_SECRET!);
+    const verified = await  verifyJWT(token, process.env.JWT_SECRET!);
     // console.log("Token verified successfully");
     
     return NextResponse.next();

@@ -48,7 +48,7 @@ export const POST = async (req: Request) => {
 			username: username,
 		})
 			.setProtectedHeader({ alg: "HS256" })
-			.setExpirationTime("1d")
+			.setIssuer("aigrading")
 			.sign(secret);
 
 		return NextResponse.json({
