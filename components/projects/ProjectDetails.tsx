@@ -1,7 +1,5 @@
 "use client";
-import StudentCard, {
-	StudentCardProps,
-} from "@/components/students/StudentCard";
+import StudentCard from "@/components/students/StudentCard";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,11 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import {
 	GitFork,
 	Star,
-	Users,
 	Eye,
 	Code,
 	Calendar,
-	GitBranch,
 } from "lucide-react";
 import { useAuthStore } from "@/store/auth-store";
 
@@ -135,11 +131,11 @@ const ProjectDetails = ({ project_id }: { project_id: string }) => {
 			</motion.div>
 			<hr className="my-5 font-bold" />
 			<div className="flex flex-wrap gap-4 ">
-				{project?.contributors.map((contributor: any) =>
+				{project?.contributors.map((contributor: Contributor) =>
 					contributor.username ? (
 						<StudentCard
 							key={contributor.username}
-							username={contributor.username}
+							username={contributor.username as string}
 							id={contributor.id}
 							avatarUrl={contributor.avatarUrl}
 							contributions={contributor.contributions}

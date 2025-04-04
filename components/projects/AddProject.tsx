@@ -27,7 +27,7 @@ export function AddProject({ onProjectAdded }: { onProjectAdded: () => void }) {
 	// 	}
 	// }, []);
 
-	const handleAddProject = async (e: React.MouseEvent<HTMLButtonElement>) => {
+	const handleAddProject = async () => {
 		// console.log(projectName,projectUrl);
 		setIsLoading(true);
 		try {

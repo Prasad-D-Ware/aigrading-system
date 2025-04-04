@@ -27,7 +27,6 @@ export default function ProjectInfo({
   project_id,
   project_name,
   full_name,
-  project_url,
   project_creator,
   description,
   no_of_contributors,
@@ -37,7 +36,6 @@ export default function ProjectInfo({
   stars,
   visibility,
   language,
-  contributers
 }: ProjectInfoProps) {
 
   const router = useRouter();

@@ -47,7 +47,7 @@ export default function Testimonials() {
               <div className="flex items-center mb-4">
                 <img
                   className="h-12 w-12 rounded-full mr-4"
-                  src={testimonial.image || "/placeholder.svg"}
+                  src={"https://placehold.co/600x600"}
                   alt={testimonial.name}
                 />
                 <div>
@@ -55,7 +55,7 @@ export default function Testimonials() {
                   <p className="text-gray-600">{testimonial.role}</p>
                 </div>
               </div>
-              <p className="text-gray-600 italic">"{testimonial.quote}"</p>
+              <p className="text-gray-600 italic">&quot;{testimonial.quote}&quot;</p>
             </motion.div>
           ))}
         </div>

@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 export interface StudentCardProps {
 	username: string;
-	id: string;
+	id: number;
 	avatarUrl: string;
 	contributions: number;
 	profileUrl: string;
@@ -19,7 +19,6 @@ export default function StudentCard({
 	avatarUrl,
 	id,
 	contributions,
-	profileUrl,
 }: StudentCardProps) {
 	const router = useRouter();
 	return (
