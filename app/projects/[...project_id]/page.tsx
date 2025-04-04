@@ -17,9 +17,9 @@
 //         },
 //         body : JSON.stringify({project_id})
 //       })
-      
+
 //       const { contributors } = await response.json();
-      
+
 //       console.log(contributors);
 //       setContributors(contributors);
 //     }catch(error : any){
@@ -42,15 +42,21 @@
 
 // export default ProjectDetailsPage
 
-
-import ProjectDetails from '@/components/projects/ProjectDetails'
-import { use } from 'react'
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import ProjectDetails from "@/components/projects/ProjectDetails";
+import { use } from "react";
 
 const ProjectDetailsPage = ({ params }: { params: any }) => {
-  const resolvedParams : any = use(params)
-  const project_id = resolvedParams.project_id
+	const resolvedParams: any = use(params);
+	const project_id = resolvedParams.project_id;
 
-  return <ProjectDetails project_id={project_id} />
-}
+	return (
+		<>
+			<ProtectedRoute>
+				<ProjectDetails project_id={project_id} />
+			</ProtectedRoute>
+		</>
+	);
+};
 
-export default ProjectDetailsPage
+export default ProjectDetailsPage;

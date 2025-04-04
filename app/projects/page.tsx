@@ -1,12 +1,13 @@
-import Project from '@/components/projects/Projects'
-import React from 'react'
+import Project from "@/components/projects/Projects";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import React from "react";
 
 const ProjectsPage = () => {
-  return (
-	<>
-	 <Project/> 
-	</>
-  )
-}
+	return (
+		<ProtectedRoute>
+			<Project />
+		</ProtectedRoute>
+	);
+};
 
-export default ProjectsPage
+export default ProjectsPage;
