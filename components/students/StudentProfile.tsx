@@ -162,7 +162,7 @@ export default function StudentProfile({ student }: StudentProfileProps) {
 		<div className="space-y-6 md:p-5">
 			<Card>
 				<CardHeader>
-					<div className="flex justify-between items-center">
+					<div className="flex justify-between items-center flex-col sm:flex-row">
 						<div className="flex items-center space-x-4 ">
 							<Button
 								variant="outline"
@@ -195,9 +195,9 @@ export default function StudentProfile({ student }: StudentProfileProps) {
 							</div>
 						</div>
 						{
-							<>
+							<div className="">
 								{grade ? (
-									<div className="flex gap-2 flex-col md:flex-row">
+									<div className="flex gap-6 sm:gap-2 mt-5 sm:mt-0">
 										<Button
 											className="bg-purple-600 hover:bg-purple-500"
 											onClick={handleDownload}
@@ -248,7 +248,7 @@ export default function StudentProfile({ student }: StudentProfileProps) {
 										)}
 									</Button>
 								)}
-							</>
+							</div>
 						}
 					</div>
 				</CardHeader>

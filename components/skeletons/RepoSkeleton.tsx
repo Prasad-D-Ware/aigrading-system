@@ -1,9 +1,9 @@
 import React from "react";
 
-const RepoSkeleton = () => {
+const RepoSkeleton = ({ numberOfSkeleton } : {numberOfSkeleton : number}) => {
   return (
-    <div className="space-y-4 w-full max-w-3xl mx-auto">
-      {[1, 2, 3].map((_, i) => (
+    <div className={`space-y-4 w-full mx-auto px-4 ${numberOfSkeleton === 3 ? "max-w-3xl" : ""}`}>
+      {Array.from({ length: numberOfSkeleton }).map((_, i) => (
         <div
           key={i}
           className="animate-pulse rounded-xl border p-6 shadow-sm space-y-4 bg-white"

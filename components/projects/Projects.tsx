@@ -6,18 +6,17 @@ import ProjectInfo, {
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/auth-store";
 import React, { useEffect, useState } from "react";
-import RepoSkeleton from "../RepoSkeleton";
+import RepoSkeleton from "../skeletons/RepoSkeleton";
 
 const Project = () => {
 	const [projects, setProjects] = useState([]);
 	const [msg, setMsg] = useState();
 	const [searchQuery, setSearchQuery] = useState("");
 	const { username, token } = useAuthStore();
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 	const fetchProjects = async () => {
 		try {
-			setLoading(true);
 			const response = await fetch("/api/getprojects", {
 				method: "POST",
 				headers: {
@@ -70,7 +69,7 @@ const Project = () => {
 
 			{loading ? (
 				<div className="flex flex-col justify-center items-center font-bold text-xl my-10">
-					<RepoSkeleton />
+					<RepoSkeleton numberOfSkeleton={3}/>
 				</div>
 			) : (
 				<div className="my-10 flex flex-col gap-3 px-4">
