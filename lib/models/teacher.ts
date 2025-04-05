@@ -21,6 +21,12 @@ const teacherSchema  = new Schema(
         },
         projects : {
             type : [String],
+        },
+        resetToken: {
+            type: String
+        },
+        resetTokenExpiry: {
+            type: Date
         }
     }
 );

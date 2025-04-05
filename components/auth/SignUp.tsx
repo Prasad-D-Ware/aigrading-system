@@ -30,10 +30,12 @@ export default function Signup() {
 		}[]
 	>([]);
 	const [showPassword, setShowPassword] = useState(false);
+	const [loading,setLoading] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setErrors([]); // Reset errors on new submission
+		setLoading(true);
 
 		const response = await fetch("/api/signup", {
 			method: "POST",
@@ -48,6 +50,7 @@ export default function Signup() {
 		if (data.errors) {
 			setErrors(data.errors);
 			toast.error(data.msg);
+			setLoading(false);
 			return;
 		}
 
@@ -57,6 +60,7 @@ export default function Signup() {
 		} else {
 			toast.error(data.msg);
 		}
+		setLoading(false);
 	};
 
 	return (
@@ -156,7 +160,24 @@ export default function Signup() {
 								className="w-full bg-purple-600 text-white hover:bg-purple-600/90"
 								onClick={handleSubmit}
 							>
-								Sign Up
+								{loading ? (
+												<div className="flex gap-1">
+													<div
+														className="w-3 h-3 rounded-full bg-white animate-bounce"
+														style={{ animationDelay: "0ms" }}
+													></div>
+													<div
+														className="w-3 h-3 rounded-full bg-white animate-bounce"
+														style={{ animationDelay: "150ms" }}
+													></div>
+													<div
+														className="w-3 h-3 rounded-full bg-white animate-bounce"
+														style={{ animationDelay: "300ms" }}
+													></div>
+												</div>
+											) : (
+												"Sign Up"
+											)}
 							</Button>
 							<p className="mt-4 text-sm text-center text-gray-600">
 								Already have an account?{" "}

@@ -25,6 +25,7 @@ export default function Login() {
 	const router = useRouter();
 	const { setToken, setTeacherUsername } = useAuthStore();
 	const [showPassword, setShowPassword] = useState(false);
+	const [loading,setLoading] = useState(false);
 
 	const [errors, setErrors] = useState<
 		{
@@ -36,7 +37,7 @@ export default function Login() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setErrors([]); // Reset errors on new submission
-
+		setLoading(true);
 		const response = await fetch("/api/login", {
 			method: "POST",
 			headers: {
@@ -50,6 +51,7 @@ export default function Login() {
 		if (data.errors) {
 			setErrors(data.errors);
 			toast.error(data.msg);
+			setLoading(false);
 			return;
 		}
 
@@ -61,6 +63,7 @@ export default function Login() {
 		} else {
 			toast.error(data.msg);
 		}
+		setLoading(false);
 	};
 
 	return (
@@ -102,7 +105,15 @@ export default function Login() {
 										)}
 									</div>
 									<div className="flex flex-col space-y-1.5">
-										<Label htmlFor="password">Password</Label>
+										<div className="flex justify-between items-center">
+											<Label htmlFor="password">Password</Label>
+											<Link
+												href="/forgot-password"
+												className="text-xs text-purple-600 hover:underline"
+											>
+												Forgot Password?
+											</Link>
+										</div>
 										<div className="relative">
 											<Input
 												id="password"
@@ -141,7 +152,24 @@ export default function Login() {
 								className="w-full bg-purple-600 text-white hover:bg-purple-600/90"
 								onClick={handleSubmit}
 							>
-								Login
+								{loading ? (
+												<div className="flex gap-1">
+													<div
+														className="w-3 h-3 rounded-full bg-white animate-bounce"
+														style={{ animationDelay: "0ms" }}
+													></div>
+													<div
+														className="w-3 h-3 rounded-full bg-white animate-bounce"
+														style={{ animationDelay: "150ms" }}
+													></div>
+													<div
+														className="w-3 h-3 rounded-full bg-white animate-bounce"
+														style={{ animationDelay: "300ms" }}
+													></div>
+												</div>
+											) : (
+												"Login"
+											)}
 							</Button>
 							<p className="mt-4 text-sm text-center text-gray-600">
 								Don't have an account?

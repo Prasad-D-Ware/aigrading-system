@@ -17,6 +17,10 @@ export const SignUpSchema = z.object({
 		.max(30, "Password must not exceed 30 characters"),
 });
 
+export const ForgotPasswordSchema = z.object({
+	email: z.string().email("Invalid email address"),
+})
+
 export const validateLogin = (data: any) => {
 	const result = LoginSchema.safeParse(data);
 	if (!result.success) {
@@ -32,3 +36,12 @@ export const validateSignUp = (data: any) => {
 	}
 	return { success: true };
 };
+
+
+export const validateForgot = (data : any) =>{
+	const result = ForgotPasswordSchema.safeParse(data);
+	if (!result.success) {
+		return { success: false, errors: result.error.errors };
+	}
+	return { success: true };
+}
