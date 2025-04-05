@@ -1,4 +1,3 @@
-import Header from "@/components/Header"
 import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
@@ -19,10 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={inter.className + "max-w-5xl mx-auto"}>
-        <Header/>
         {children}
         <Toaster />
-        </body>
+      </body>
     </html>
   )
 }
