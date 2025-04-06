@@ -19,6 +19,7 @@ import { GradeData, GradeDialog } from "./GradeDialog";
 import { useAuthStore } from "@/store/auth-store";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 
 interface Commit {
 	date: string;
@@ -342,39 +343,33 @@ export default function StudentProfile({ student }: StudentProfileProps) {
 				</CardContent>
 			</Card>
 
-			{selectedCommit && (
-				<motion.div
-					initial={{ opacity: 0, scale: 0.95 }}
-					animate={{ opacity: 1, scale: 1 }}
-					exit={{ opacity: 0, scale: 0.95 }}
-				>
-					<Card>
-						<CardHeader>
-							<CardTitle>Commit Details</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<p className="font-medium">{selectedCommit.message}</p>
-							<p className="text-sm text-gray-500 mb-4">
-								{new Date(selectedCommit.date).toLocaleString()}
-							</p>
-							<h4 className="font-semibold mb-2">Files Changed:</h4>
-							<ul className="space-y-2">
-								{selectedCommit.files.map((file, index) => (
-									<li key={index} className="flex justify-between items-center">
-										<span>{file.name}</span>
-										<div>
-											<span className="text-green-600 mr-2">
-												+{file.additions}
-											</span>
-											<span className="text-red-600">-{file.deletions}</span>
-										</div>
-									</li>
-								))}
-							</ul>
-						</CardContent>
-					</Card>
-				</motion.div>
-			)}
+			<Dialog open={!!selectedCommit} onOpenChange={() => setSelectedCommit(null)}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Commit Details</DialogTitle>
+					</DialogHeader>
+					<div>
+						<p className="font-medium">{selectedCommit?.message}</p>
+						<p className="text-sm text-gray-500 mb-4">
+							{selectedCommit && new Date(selectedCommit.date).toLocaleString()}
+						</p>
+						<h4 className="font-semibold mb-2">Files Changed:</h4>
+						<ul className="space-y-2">
+							{selectedCommit?.files.map((file, index) => (
+								<li key={index} className="flex justify-between items-center">
+									<span>{file.name}</span>
+									<div>
+										<span className="text-green-600 mr-2">
+											+{file.additions}
+										</span>
+										<span className="text-red-600">-{file.deletions}</span>
+									</div>
+								</li>
+							))}
+						</ul>
+					</div>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }

@@ -5,10 +5,12 @@ import StudentProfile, {
 	StudentProfileProps,
 } from "./StudentProfile";
 import { useAuthStore } from "@/store/auth-store";
+import StudentProfileSkeleton from "../skeletons/StudentProfileSkeleton";
 
 const StudentInfo = ({ user_id }: { user_id: string }) => {
 	const [student, setStudent] = useState<StudentData>();
 	const { token } = useAuthStore();
+	const [loading, setLoading] = useState(true);
 
 	const fetchStudentData = async () => {
 		try {
@@ -24,6 +26,7 @@ const StudentInfo = ({ user_id }: { user_id: string }) => {
 			const data: StudentProfileProps = await response.json();
 			// console.log(data);
 			setStudent(data.student);
+			setLoading(false);
 		} catch (error: any) {
 			console.log("Error fetching Student : ", error.message);
 		}
@@ -35,7 +38,11 @@ const StudentInfo = ({ user_id }: { user_id: string }) => {
 		}
 	}, [token]);
 
-	return <div>{student && <StudentProfile student={student} />}</div>;
+	if(loading){
+		return <StudentProfileSkeleton />
+	}
+
+	return <div>{!loading && student && <StudentProfile student={student} />}</div>;
 };
 
 export default StudentInfo;
