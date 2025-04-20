@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 export interface StudentCardProps {
 	username: string;
-	id: number;
+	id: string;
 	avatarUrl: string;
 	contributions: number;
 	profileUrl: string;

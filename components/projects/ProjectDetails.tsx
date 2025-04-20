@@ -12,6 +12,7 @@ import StudentCardSkeleton from "../skeletons/StudentCardSkeleton";
 type Contributor = {
 	username: string;
 	id: number;
+	user_id : string;
 	avatarUrl: string;
 	contributions: number;
 	profileUrl: string;
@@ -143,7 +144,7 @@ const ProjectDetails = ({ project_id }: { project_id: string }) => {
 							<StudentCard
 								key={contributor.username}
 								username={contributor.username as string}
-								id={contributor.id}
+								id={contributor.user_id}
 								avatarUrl={contributor.avatarUrl}
 								contributions={contributor.contributions}
 								profileUrl={contributor.profileUrl}

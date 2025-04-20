@@ -57,6 +57,9 @@ export const POST = async (req: Request) => {
 		let totalProjectAdditions = 0;
 		let totalProjectDeletions = 0;
 		// Process contributors in parallel but wait for all to complete
+
+		let projectContributers : any  = [];
+
 		await Promise.all(
 			contributors?.map(async (contributor) => {
 				const detailedStats = await getContributorDetailedStats(
@@ -67,10 +70,20 @@ export const POST = async (req: Request) => {
 				totalProjectAdditions += detailedStats.totalAdditions;
 				totalProjectDeletions += detailedStats.totalDeletions;
 
+				const user_id = uuid4();
+
+				const projectContributer = {
+					...contributor,
+					user_id : user_id
+				}
+
+				projectContributers.push(projectContributer);
+
 				const studentContributor = {
 					project_id,
-					user_id: contributor.id,
+					user_id: user_id,
 					github_username: contributor.username,
+					github_id : contributor.id,
 					profile_url: contributor.profileUrl,
 					avatar_url: contributor.avatarUrl,
 					total_commits: detailedStats.totalCommits,
@@ -86,6 +99,8 @@ export const POST = async (req: Request) => {
 			}) || []
 		);
 
+		projectContributers.reverse();
+
 		const project = {
 			project_id: project_id,
 			project_name: projectName,
@@ -100,7 +115,7 @@ export const POST = async (req: Request) => {
 			stars: repoInfo.stars,
 			visibility: repoInfo.visibility,
 			language: repoInfo.language,
-			contributors: contributors,
+			contributors: projectContributers,
 			projectStats: {
 				totalCommits: repoInfo.totalCommits,
 				avgCommits: repoInfo.avgCommits,

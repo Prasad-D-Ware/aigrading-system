@@ -6,11 +6,15 @@ const studentSchema  = new Schema(
             type : String
         },
         user_id : {
-            type : String
+            type : String,
+            unique : true,
         },
         github_username : {
             type : String,
             required : true
+        },
+        github_id : {
+            type : String
         },
         grade : {
             type : Object
