@@ -14,9 +14,10 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { deleteProjectData } from "@/actions/project";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useAuthStore } from "@/store/auth-store";
+import Loader from "../Loader";
 
 export interface ProjectInfoProps {
 	project_id: string;
@@ -52,17 +53,35 @@ export default function ProjectInfo({
 }: ProjectInfoProps & { onProjectDeleted: () => void }) {
 	const router = useRouter();
 	const [open, setOpen] = useState(false);
-
+	const { token } = useAuthStore();
+	const [loading, setLoading] = useState(false);
 	const deleteProject = async () => {
 		// console.log(project_id);
-		const response = await deleteProjectData(project_id);
-		// console.log(response)
-		if (response.success) {
-			setOpen(false);
-			toast.success(response.msg);
-			onProjectDeleted();
-		} else {
-			toast.error(response.msg);
+		try {
+			setLoading(true);
+			const res: any = await fetch("/api/deleteproject", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: "Bearer " + token,
+				},
+				body: JSON.stringify({ project_id }),
+			});
+
+			const response = await res.json();
+			// console.log(response)
+			if (response.success) {
+				setOpen(false);
+				setLoading(false);
+				toast.success(response.msg);
+				onProjectDeleted();
+			} else {
+				setLoading(false);
+				toast.error(response.msg);
+			}
+		} catch (error: any) {
+			setLoading(false);
+			console.log("Error Deleting project", error.message);
 		}
 	};
 
@@ -106,7 +125,7 @@ export default function ProjectInfo({
 												Cancel
 											</button>
 										</DialogClose>
-										<DialogClose asChild>
+										{/* <DialogClose asChild> */}
 											<button
 												className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
 												onClick={(e) => {
@@ -114,9 +133,13 @@ export default function ProjectInfo({
 													deleteProject();
 												}}
 											>
-												Delete Project
+												{loading ? (
+													<Loader />
+												) : (
+													"Delete Project"
+												)}
 											</button>
-										</DialogClose>
+										{/* </DialogClose> */}
 									</div>
 								</DialogContent>
 							</Dialog>

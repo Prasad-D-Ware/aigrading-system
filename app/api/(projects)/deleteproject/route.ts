@@ -1,13 +1,18 @@
-"use server";
 import connectDB from "@/lib/db";
 import Project from "@/lib/models/project";
 import Student from "@/lib/models/student";
 import Teacher from "@/lib/models/teacher";
 import mongoose from "mongoose";
+import { NextRequest, NextResponse } from "next/server";
 
-export const deleteProjectData = async (project_id: string) => {
+export const POST = async (req : NextRequest) => {
+
+    const { project_id } = await req.json();
+
 	if (!project_id) {
-        return { msg :"Project Id not found", success : false}
+        return NextResponse.json({ msg :"Project Id not found", success : false},
+            {status : 401}
+        )
 	}
 
 	// Initialize session for transaction
@@ -23,7 +28,9 @@ export const deleteProjectData = async (project_id: string) => {
 		if (!project) {
 			await session.abortTransaction();
 			session.endSession();
-            return { msg :"Project Not Found!", success : false}
+            return NextResponse.json({ msg :"Project Not Found!", success : false} ,
+                {status : 401}
+            )
 		}
 
 		// 1. Delete all students associated with the project
@@ -43,7 +50,9 @@ export const deleteProjectData = async (project_id: string) => {
 		await session.commitTransaction();
 		session.endSession();
 
-        return { msg :"Project Deleted Successfully!", success : true}
+        return NextResponse.json({ msg :"Project Deleted Successfully!", success : true},
+            {status : 200}
+        )
 	} catch (error: any) {
 		await session.abortTransaction();
 		session.endSession();
