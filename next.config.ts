@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
   },
   // Increase function timeout
   serverRuntimeConfig: {
-    functionTimeout: 30, // 30 seconds (this is the maximum for some serverless platforms)
+    functionTimeout: 60, // Increased from 30 to 60 seconds to handle the deletion process
   }
 };
 
