@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
+import Loader from "../Loader";
 
 export default function Signup() {
 	const [email, setEmail] = useState("");
@@ -161,20 +162,7 @@ export default function Signup() {
 								onClick={handleSubmit}
 							>
 								{loading ? (
-												<div className="flex gap-1">
-													<div
-														className="w-3 h-3 rounded-full bg-white animate-bounce"
-														style={{ animationDelay: "0ms" }}
-													></div>
-													<div
-														className="w-3 h-3 rounded-full bg-white animate-bounce"
-														style={{ animationDelay: "150ms" }}
-													></div>
-													<div
-														className="w-3 h-3 rounded-full bg-white animate-bounce"
-														style={{ animationDelay: "300ms" }}
-													></div>
-												</div>
+												<Loader/>
 											) : (
 												"Sign Up"
 											)}

@@ -18,6 +18,7 @@ import {
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/auth-store";
 import { Eye, EyeOff } from "lucide-react";
+import Loader from "../Loader";
 
 export default function Login() {
 	const [username, setUsername] = useState("");
@@ -153,20 +154,7 @@ export default function Login() {
 								onClick={handleSubmit}
 							>
 								{loading ? (
-												<div className="flex gap-1">
-													<div
-														className="w-3 h-3 rounded-full bg-white animate-bounce"
-														style={{ animationDelay: "0ms" }}
-													></div>
-													<div
-														className="w-3 h-3 rounded-full bg-white animate-bounce"
-														style={{ animationDelay: "150ms" }}
-													></div>
-													<div
-														className="w-3 h-3 rounded-full bg-white animate-bounce"
-														style={{ animationDelay: "300ms" }}
-													></div>
-												</div>
+												<Loader/>
 											) : (
 												"Login"
 											)}

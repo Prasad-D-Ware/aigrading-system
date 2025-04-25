@@ -20,6 +20,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import Loader from "../Loader";
 
 interface Commit {
 	date: string;
@@ -204,20 +205,7 @@ export default function StudentProfile({ student }: StudentProfileProps) {
 											onClick={handleDownload}
 										>
 											{isLoading ? (
-												<div className="flex gap-1">
-													<div
-														className="w-3 h-3 rounded-full bg-white animate-bounce"
-														style={{ animationDelay: "0ms" }}
-													></div>
-													<div
-														className="w-3 h-3 rounded-full bg-white animate-bounce"
-														style={{ animationDelay: "150ms" }}
-													></div>
-													<div
-														className="w-3 h-3 rounded-full bg-white animate-bounce"
-														style={{ animationDelay: "300ms" }}
-													></div>
-												</div>
+												<Loader/>
 											) : (
 												"Download"
 											)}
@@ -230,20 +218,7 @@ export default function StudentProfile({ student }: StudentProfileProps) {
 										onClick={handleStudentGrading}
 									>
 										{isLoading ? (
-											<div className="flex gap-1">
-												<div
-													className="w-3 h-3 rounded-full bg-white animate-bounce"
-													style={{ animationDelay: "0ms" }}
-												></div>
-												<div
-													className="w-3 h-3 rounded-full bg-white animate-bounce"
-													style={{ animationDelay: "150ms" }}
-												></div>
-												<div
-													className="w-3 h-3 rounded-full bg-white animate-bounce"
-													style={{ animationDelay: "300ms" }}
-												></div>
-											</div>
+											<Loader/>
 										) : (
 											"Grade"
 										)}

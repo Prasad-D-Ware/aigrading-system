@@ -13,6 +13,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import Loader from "../Loader";
 
 export function AddProject({ onProjectAdded }: { onProjectAdded: () => void }) {
 	const [projectName, setProjectName] = useState("");
@@ -104,11 +105,7 @@ export function AddProject({ onProjectAdded }: { onProjectAdded: () => void }) {
 						onClick={handleAddProject}
 					>
 						{isLoading ? (
-							<div className="flex gap-1">
-								<div className="w-3 h-3 rounded-full bg-white animate-bounce" style={{animationDelay: "0ms"}}></div>
-								<div className="w-3 h-3 rounded-full bg-white animate-bounce" style={{animationDelay: "150ms"}}></div>
-								<div className="w-3 h-3 rounded-full bg-white animate-bounce" style={{animationDelay: "300ms"}}></div>
-							</div>
+							<Loader/>
 						) : (
 							"Add Project"
 						)}
