@@ -9,6 +9,7 @@ import {
 } from "@/utils/github";
 import { NextResponse } from "next/server";
 import { v4 as uuid4 } from "uuid";
+import mongoose from "mongoose";
 
 export const POST = async (req: Request) => {
 	const { projectName, projectUrl, username } = await req.json();
@@ -18,6 +19,10 @@ export const POST = async (req: Request) => {
 			msg: "Fill Required Details!",
 		});
 	}
+
+	// Initialize session for transaction
+	const session = await mongoose.startSession();
+	session.startTransaction();
 
 	try {
 		const repoInfo = await getRepositoryInfo(projectUrl);
@@ -44,9 +49,11 @@ export const POST = async (req: Request) => {
 				username: 1,
 				projects: 1,
 			}
-		);
+		).session(session);
 
 		if (!teacher) {
+			await session.abortTransaction();
+			session.endSession();
 			return NextResponse.json({
 				msg: "No Teacher found!",
 			});
@@ -56,8 +63,7 @@ export const POST = async (req: Request) => {
 
 		let totalProjectAdditions = 0;
 		let totalProjectDeletions = 0;
-		// Process contributors in parallel but wait for all to complete
-
+		
 		let projectContributers : any  = [];
 
 		await Promise.all(
@@ -95,7 +101,7 @@ export const POST = async (req: Request) => {
 					weekly_activity: detailedStats.weeklyActivity,
 				};
 
-				return Student.create(studentContributor);
+				return Student.create([studentContributor], { session });
 			}) || []
 		);
 
@@ -124,15 +130,17 @@ export const POST = async (req: Request) => {
 			},
 		};
 
-		const ProjectObj = await Project.create(project);
+		const ProjectObj = await Project.create([project], { session });
 
 		if (!ProjectObj) {
+			await session.abortTransaction();
+			session.endSession();
 			return NextResponse.json({
 				msg: "Error creating project",
 			});
 		}
 
-		const updateTeach = await Teacher.updateOne(
+		await Teacher.updateOne(
 			{
 				username: teacher.username,
 			},
@@ -140,13 +148,22 @@ export const POST = async (req: Request) => {
 				$push: {
 					projects: project_id,
 				},
-			}
+			},
+			{ session }
 		);
+
+		// Commit the transaction
+		await session.commitTransaction();
+		session.endSession();
 
 		return NextResponse.json({
 			msg: "Project Created Successfully!",
 		});
 	} catch (error: any) {
+		// Abort transaction in case of error
+		await session.abortTransaction();
+		session.endSession();
+		
 		console.log("Error while adding project : ", error.message);
 		return NextResponse.json({
 			msg: "Error while adding project : " + error.message,
