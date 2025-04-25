@@ -75,7 +75,7 @@ const Project = () => {
 				<div className="my-10 flex flex-col gap-3 px-4">
 					{filteredProjects?.length > 0 ? (
 						filteredProjects?.map((project: ProjectInfoProps) => {
-							return <ProjectInfo {...project} key={project?.project_id} />;
+							return <ProjectInfo {...project} key={project?.project_id} onProjectDeleted={fetchProjects}/>;
 						})
 					) : (
 						<div className="flex flex-col justify-center items-center font-bold text-xl">
