@@ -30,7 +30,7 @@ export default function Header() {
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.5 }}
 		>
-			<div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+			<div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 				<div className="flex items-center justify-between h-16">
 					<motion.div
 						className="flex items-center"
